@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <title>単語カード/单词卡</title>
   <style>
-    #flashcard {
+     #flashcard {
       width: 1000px;
       height: 300px;
       border: 1px solid #000;
@@ -24,8 +24,7 @@
       /* パディングを増やしてボタンのサイズを調整する */
       margin: 10px; /* マージンを追加してボタンを配置しやすくする */
     }
-
-    body {
+body {
       background-color: #f4c4ee;
     }
 
@@ -37,19 +36,64 @@
       font-size: 24px;
       margin-top: 20px;
     }
+    .header  {
+      
+      display: flex;
+    }
+    .linkurl {
+      margin-left: auto;
+    }
+   
+    #flash {
+      display: inline-block;
+      width: 100px;
+      height: 40px;
+      cursor: pointer;
+      background-color: skyblue;
+      text-decoration: none;
+      text-align: center;
+      line-height: 50px;
+      border-radius: 6px
+      
+    }
+    #ikeda {
+      display: inline-block;
+      width: 100px;
+      height: 40px;
+      cursor: pointer;
+      background-color: pink;
+      text-decoration: none;
+      text-align: center;
+      line-height: 50px;
+      border-radius: 6px
+      
+    }
   </style>
 </head>
 
 <body>
+  <div class="header">
+    <div class="logo">
+      <h3>中国語　フラッシュカード</h3>
+    
+    </div>
+    <div class="linkurl">
+      <a id="flash" href="https://script.google.com/macros/s/AKfycbz4oJsJ-w-NmZI_qlEsi_jMeoWUbBfcKWinqAECVhQxJe49tWGij9KNLZjJ7UMSMc8/exec" target="_blank">会話、短文</a>
+      <a id="ikeda" href="index6.html" target="_blank">使用手引書</a>
+  
+    </div>
+  </div>
   <div id="flashcard">Click to see definition/按下键看(第5课)单词卡</div>
-  <button onclick="showAnswer()">按键看下一个</button>
+  <button onclick="showPreviousCard()">上一个</button>
+  <button onclick="showAnswer()">下一个</button>
   <button onclick="checkAnswer(true)">答案和我想的一样</button>
   <button onclick="checkAnswer(false)">答案和我想的不一样</button>
 
   <div id="result">正解: 0 回 不正解: 0 回</div>
 
   <script>
-    const flashcard = document.getElementById('flashcard');
+    /* 省略... */
+const flashcard = document.getElementById('flashcard');
     const resultDiv = document.getElementById('result');
     const synth = window.speechSynthesis;
 
@@ -63,7 +107,7 @@
 { term: 'JavaScript', definition: '5.秦の始皇帝/名詞/Qínshǐhuáng' }, { term: 'HTML', definition: '秦始皇' },
 { term: 'JavaScript', definition: '6.周り、周辺/名詞/zhōuwéi' }, { term: 'HTML', definition: '周围' },
 { term: 'JavaScript', definition: '7.城壁/名詞/chéngqiáng' }, { term: 'HTML', definition: '城墙' },
-{ term: 'JavaScript', definition: '8.つなぐ、つながる/動詞/liánjiē ' }, { term: 'HTML', definition: '连接' },
+{ term: 'JavaScript', definition: '8.つなぐ、つながる/動詞/liánjiē ' }, { term: 'HTML', definition: '连接' },
 { term: 'JavaScript', definition: '9.建造する、修築する/動詞/xiūjiàn' }, { term: 'HTML', definition: '修建' },
 { term: 'JavaScript', definition: '10.（人を）募集する/動詞/zhāomù' }, { term: 'HTML', definition: '招募' },
 { term: 'JavaScript', definition: '11.政府に徴集されて臨時の工事をする民間労働者/名詞/míngōng' }, { term: 'HTML', definition: '民工' },
@@ -77,7 +121,7 @@
 { term: 'JavaScript', definition: '19.そこで/接続詞/yúshì' }, { term: 'HTML', definition: '于是' },
 { term: 'JavaScript', definition: '20.どんなに（～しても）/連語/zěnme + V（+ yě）' }, { term: 'HTML', definition: '怎么 + V (+也)' },
 { term: 'JavaScript', definition: '21.尋ねる、問い合わせる/動詞/dǎtīng' }, { term: 'HTML', definition: '打听' },
-{ term: 'JavaScript', definition: '22.やっと、ようやく/副詞/cái ' }, { term: 'HTML', definition: '才' },
+{ term: 'JavaScript', definition: '22.やっと、ようやく/副詞/cái ' }, { term: 'HTML', definition: '才' },
 { term: 'JavaScript', definition: '23.分かる、知る/動詞/zhīdào' }, { term: 'HTML', definition: '知道' },
 { term: 'JavaScript', definition: '24.疲れる/形容詞/lèi' }, { term: 'HTML', definition: '累' },
 { term: 'JavaScript', definition: '25.下/名詞/dǐxia' }, { term: 'HTML', definition: '底下' },
@@ -89,13 +133,13 @@
 { term: 'JavaScript', definition: '31.400キロ、（ものの）長いことを表す/連語/bābǎi lǐ' }, { term: 'HTML', definition: '八百里' },
 { term: 'JavaScript', definition: '32.倒れる、崩れる/動詞/dàotā' }, { term: 'HTML', definition: '倒塌' },
 { term: 'JavaScript', definition: '33.見つかる、見つける/動詞/zhǎodào' }, { term: 'HTML', definition: '找到' },
-{ term: 'JavaScript', definition: '34.死体/名詞/shītǐ ' }, { term: 'HTML', definition: '尸体' },
+{ term: 'JavaScript', definition: '34.死体/名詞/shītǐ ' }, { term: 'HTML', definition: '尸体' },
 { term: 'JavaScript', definition: '35.埋葬する/動詞/ānzàng' }, { term: 'HTML', definition: '安葬' },
 { term: 'JavaScript', definition: '36.山海関、万里の長城の起点/名詞/Shānhǎiguān' }, { term: 'HTML', definition: '山海关' },
 { term: 'JavaScript', definition: '37.海に身を投げる/動詞/tóuhǎi' }, { term: 'HTML', definition: '投海' },
 { term: 'JavaScript', definition: '38.自殺する/動詞/zìjìn' }, { term: 'HTML', definition: '自尽' },
-{ term: 'JavaScript', definition: '39.その後、やがて/接続詞/hòulái ' }, { term: 'HTML', definition: '后来' },
-{ term: 'JavaScript', definition: '40.廟、祖先の霊を祭るところ/名詞/miào ' }, { term: 'HTML', definition: '庙' },
+{ term: 'JavaScript', definition: '39.その後、やがて/接続詞/hòulái ' }, { term: 'HTML', definition: '后来' },
+{ term: 'JavaScript', definition: '40.廟、祖先の霊を祭るところ/名詞/miào ' }, { term: 'HTML', definition: '庙' },
 { term: 'JavaScript', definition: '41.祭祀をとり行う、まつる/動詞/jìsì' }, { term: 'HTML', definition: '祭祀' },
 
       // 他の単語と定義を追加
@@ -108,6 +152,12 @@
     let currentIndex = 0;
     let correctCount = 0;
     let incorrectCount = 0;
+    // 前のカードを表示する関数
+    function showPreviousCard() {
+      currentIndex = (currentIndex - 1 + flashcardData.length) % flashcardData.length;
+      const currentData = flashcardData[currentIndex];
+      flashcard.textContent = currentData.term;
+    }
 
     // 答えを表示し、音声を再生する関数
     function showAnswer() {
