@@ -1,19 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE Chinese>
+<html lang="ja">
 
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>単語カード/单词卡</title>
   <style>
-     #flashcard {
-      width: 1000px;
-      height: 300px;
+    #flashcard {
+      width: 380px;
+      height: 200px;
       border: 1px solid #000;
       text-align: center;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 48px;
+      font-size: 28px;
     }
 
     /* ボタンのスタイルを変更してサイズを大きくする */
@@ -22,9 +24,11 @@
       /* フォントサイズを大きくする */
       padding: 20px 30px;
       /* パディングを増やしてボタンのサイズを調整する */
-      margin: 10px; /* マージンを追加してボタンを配置しやすくする */
+      margin: 10px;
+      /* マージンを追加してボタンを配置しやすくする */
     }
-body {
+
+    body {
       background-color: #f4c4ee;
     }
 
@@ -36,14 +40,16 @@ body {
       font-size: 24px;
       margin-top: 20px;
     }
-    .header  {
-      
+
+    .header2 {
+
       display: flex;
     }
+
     .linkurl {
       margin-left: auto;
     }
-   
+
     #flash {
       display: inline-block;
       width: 100px;
@@ -54,8 +60,8 @@ body {
       text-align: center;
       line-height: 50px;
       border-radius: 6px
-      
     }
+
     #ikeda {
       display: inline-block;
       width: 100px;
@@ -66,24 +72,36 @@ body {
       text-align: center;
       line-height: 50px;
       border-radius: 6px
-      
     }
   </style>
+  <!--  スプレッドシートの情報を読み込むために必要 -->
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+
 </head>
 
 <body>
   <div class="header">
-    <div class="logo">
-      <h3>中国語　フラッシュカード</h3>
-    
+    <div class="header2">
+      <div class="logo">
+        <h3>中国語　フラッシュカード</h3>
+
+      </div>
+      <div class="linkurl">
+        <a id="flash"
+          href="https://script.google.com/macros/s/AKfycbz4oJsJ-w-NmZI_qlEsi_jMeoWUbBfcKWinqAECVhQxJe49tWGij9KNLZjJ7UMSMc8/exec"
+          target="_blank">会話、短文</a>
+        <a id="ikeda" href="index6.Chinese" target="_blank">使用手引書</a>
+
+      </div>
     </div>
-    <div class="linkurl">
-      <a id="flash" href="https://script.google.com/macros/s/AKfycbz4oJsJ-w-NmZI_qlEsi_jMeoWUbBfcKWinqAECVhQxJe49tWGij9KNLZjJ7UMSMc8/exec" target="_blank">会話、短文</a>
-      <a id="ikeda" href="index6.html" target="_blank">使用手引書</a>
-  
+    <!-- シートセレクトボックス -->
+    <div class="sheetSelect">
+
+      <label for="sheet-select">シート選択：</label><select id="sheet-select" name="sheetSelect"></select>
     </div>
   </div>
-  <div id="flashcard">Click to see definition/按下键看(第5课)单词卡</div>
+  <div id="flashcard">Click to see definition/按下键看单词卡</div>
+
   <button onclick="showPreviousCard()">上一个</button>
   <button onclick="showAnswer()">下一个</button>
   <button onclick="checkAnswer(true)">答案和我想的一样</button>
@@ -91,92 +109,133 @@ body {
 
   <div id="result">正解: 0 回 不正解: 0 回</div>
 
+
   <script>
-    /* 省略... */
-const flashcard = document.getElementById('flashcard');
-    const resultDiv = document.getElementById('result');
-    const synth = window.speechSynthesis;
-
-    // フラッシュカードの情報
-    const flashcardData = [
-      // 省略...
-      { term: 'JavaScript', definition: '1.だれもが（どの家でも）よく知っている/成語/jiā yù hù xiǎo' }, { term: 'HTML', definition: '家喻户晓' },
-{ term: 'JavaScript', definition: '2.世間、民衆の間/名詞/mínjiān' }, { term: 'HTML', definition: '民间' },
-{ term: 'JavaScript', definition: '3.伝説/名詞/chuánshuō' }, { term: 'HTML', definition: '传说' },
-{ term: 'JavaScript', definition: '4.紀元前/連語/gōngyuán qián' }, { term: 'HTML', definition: '公元前' },
-{ term: 'JavaScript', definition: '5.秦の始皇帝/名詞/Qínshǐhuáng' }, { term: 'HTML', definition: '秦始皇' },
-{ term: 'JavaScript', definition: '6.周り、周辺/名詞/zhōuwéi' }, { term: 'HTML', definition: '周围' },
-{ term: 'JavaScript', definition: '7.城壁/名詞/chéngqiáng' }, { term: 'HTML', definition: '城墙' },
-{ term: 'JavaScript', definition: '8.つなぐ、つながる/動詞/liánjiē ' }, { term: 'HTML', definition: '连接' },
-{ term: 'JavaScript', definition: '9.建造する、修築する/動詞/xiūjiàn' }, { term: 'HTML', definition: '修建' },
-{ term: 'JavaScript', definition: '10.（人を）募集する/動詞/zhāomù' }, { term: 'HTML', definition: '招募' },
-{ term: 'JavaScript', definition: '11.政府に徴集されて臨時の工事をする民間労働者/名詞/míngōng' }, { term: 'HTML', definition: '民工' },
-{ term: 'JavaScript', definition: '12.孟姜女、秦の始皇帝時代の女性の名/名詞/Mèng-Jiāngnǚ' }, { term: 'HTML', definition: '孟姜女' },
-{ term: 'JavaScript', definition: '13.～したばかり/副詞/gānggāng' }, { term: 'HTML', definition: '刚刚' },
-{ term: 'JavaScript', definition: '14.すでに、もう/副詞/jiù' }, { term: 'HTML', definition: '就' },
-{ term: 'JavaScript', definition: '15.捕まえる/動詞/zhuā' }, { term: 'HTML', definition: '抓' },
-{ term: 'JavaScript', definition: '16.待つ/動詞/děng' }, { term: 'HTML', definition: '等' },
-{ term: 'JavaScript', definition: '17.しかし/接続詞/kěshì' }, { term: 'HTML', definition: '可是' },
-{ term: 'JavaScript', definition: '18.音信、便り/名詞/xiāoxi' }, { term: 'HTML', definition: '消息' },
-{ term: 'JavaScript', definition: '19.そこで/接続詞/yúshì' }, { term: 'HTML', definition: '于是' },
-{ term: 'JavaScript', definition: '20.どんなに（～しても）/連語/zěnme + V（+ yě）' }, { term: 'HTML', definition: '怎么 + V (+也)' },
-{ term: 'JavaScript', definition: '21.尋ねる、問い合わせる/動詞/dǎtīng' }, { term: 'HTML', definition: '打听' },
-{ term: 'JavaScript', definition: '22.やっと、ようやく/副詞/cái ' }, { term: 'HTML', definition: '才' },
-{ term: 'JavaScript', definition: '23.分かる、知る/動詞/zhīdào' }, { term: 'HTML', definition: '知道' },
-{ term: 'JavaScript', definition: '24.疲れる/形容詞/lèi' }, { term: 'HTML', definition: '累' },
-{ term: 'JavaScript', definition: '25.下/名詞/dǐxia' }, { term: 'HTML', definition: '底下' },
-{ term: 'JavaScript', definition: '26.心が痛むほど悲しい/形容詞/bēitòng' }, { term: 'HTML', definition: '悲痛' },
-{ term: 'JavaScript', definition: '27.すごく～だ/連語/jíle' }, { term: 'HTML', definition: '极了' },
-{ term: 'JavaScript', definition: '28.泣く/動詞/kū' }, { term: 'HTML', definition: '哭' },
-{ term: 'JavaScript', definition: '29.動作の過程が長いことを表す/連語/V a + V a' }, { term: 'HTML', definition: 'V 啊 +V 啊' },
-{ term: 'JavaScript', definition: '30.発見する、気づく/動詞/fāxiàn' }, { term: 'HTML', definition: '发现' },
-{ term: 'JavaScript', definition: '31.400キロ、（ものの）長いことを表す/連語/bābǎi lǐ' }, { term: 'HTML', definition: '八百里' },
-{ term: 'JavaScript', definition: '32.倒れる、崩れる/動詞/dàotā' }, { term: 'HTML', definition: '倒塌' },
-{ term: 'JavaScript', definition: '33.見つかる、見つける/動詞/zhǎodào' }, { term: 'HTML', definition: '找到' },
-{ term: 'JavaScript', definition: '34.死体/名詞/shītǐ ' }, { term: 'HTML', definition: '尸体' },
-{ term: 'JavaScript', definition: '35.埋葬する/動詞/ānzàng' }, { term: 'HTML', definition: '安葬' },
-{ term: 'JavaScript', definition: '36.山海関、万里の長城の起点/名詞/Shānhǎiguān' }, { term: 'HTML', definition: '山海关' },
-{ term: 'JavaScript', definition: '37.海に身を投げる/動詞/tóuhǎi' }, { term: 'HTML', definition: '投海' },
-{ term: 'JavaScript', definition: '38.自殺する/動詞/zìjìn' }, { term: 'HTML', definition: '自尽' },
-{ term: 'JavaScript', definition: '39.その後、やがて/接続詞/hòulái ' }, { term: 'HTML', definition: '后来' },
-{ term: 'JavaScript', definition: '40.廟、祖先の霊を祭るところ/名詞/miào ' }, { term: 'HTML', definition: '庙' },
-{ term: 'JavaScript', definition: '41.祭祀をとり行う、まつる/動詞/jìsì' }, { term: 'HTML', definition: '祭祀' },
-
-      // 他の単語と定義を追加
-      { term: 'JavaScript', definition: '私は中国語を勉強しているところだ。' },
-      { term: 'HTML', definition: '我在学习汉语。👍赞' },
-      { term: 'JavaScript', definition: '全部の内容を勉強しました。' },
-      { term: 'HTML', definition: '我学完了全部！👍赞' },
-    ];
-
-    let currentIndex = 0;
+    // スプレッドシート　単語カード3　gas webアプリ　URL  単語カード3
+    const END_POINT = "https://script.google.com/macros/s/AKfycbyxQF6ra_N6kJ1bGfaQV9j87f53-ESW_ovbUjoPuiONzAHKRZ2ApIhiBG7RhJub4FgN/exec";
+    // スプレッドシート　単語カードを読み込んで配列　flashcardDataにセット
+    let flashcardDatas;  // 全シートのflashdata
+    let flashcardData;   // フラッシュカード新形式
+    let flashcardData2;  // フラッシュカード旧形式
+    let sheetIndex = 0;
+    let currentIndex = -1;
     let correctCount = 0;
     let incorrectCount = 0;
-    // 前のカードを表示する関数
-    function showPreviousCard() {
-      currentIndex = (currentIndex - 1 + flashcardData.length) % flashcardData.length;
-      const currentData = flashcardData[currentIndex];
-      flashcard.textContent = currentData.term;
+    flashcardYomikomi();  // スプレッドシート読み込み
+    //
+    const flashcard = document.getElementById('flashcard');
+    // const button = document.querySelector('button');
+    const sheetSelector = document.getElementById("sheet-select");
+    let termSave;  //  フラッシュカードをクリックしたときに表示内容が中国語かどうかを判定するため
+
+    const resultDiv = document.getElementById('result');
+    const synth = window.speechSynthesis;
+    // 非同期処理　すブレッドシートの単語カード読み込み関数
+    // 読み込みが成功すればflashcardDataにデータを格納する。
+    function flashcardYomikomi() {
+      $.ajax({
+        type: "GET",
+        url: END_POINT,
+        // data: { sheetNo: SHEET_NO }
+
+      }).done((result) => {        // 成功した時の処理
+        console.log("get done:" + result);
+        setSheetNames(JSON.parse(result)[0]);
+
+        flashcardDatas = JSON.parse(result);
+        flashcardData = JSON.parse(result)[1];
+        flashcardData2 = flashcardGenerate(flashcardData);
+
+      }).fail((error) => {  // 失敗した時の処理
+        alert('Error:' + JSON.stringify(error));
+
+      }).always((data) => {// 常にやる処理
+        // do something
+        // enableControlElements();
+      });
     }
+    // シート選択されたときの処理
+    let select = document.querySelector('[name="sheetSelect"]');
+
+    select.onchange = event => {
+      var selIndex = select.selectedIndex;
+      sheetIndex = selIndex;
+      console.log(select.selectedIndex);
+
+      flashcardData = flashcardDatas[selIndex + 1];
+
+      flashcardData2 = flashcardGenerate(flashcardData);
+      currentIndex = -1;
+      let correctCount = 0;
+      let incorrectCount = 0;
+      flashcard.textContent = '按下键看单词卡';
+
+    }
+    // シートのセレクトボックス　作成処理
+    function setSheetNames(sheetNamesArray) {
+      sheetSelector.innerChinese = "";
+      document.createElement('option')
+      sheetNamesArray.forEach((sheetName, index) => {
+        let option = document.createElement('option');
+        option.setAttribute('value', index + 1);
+        option.innerHTML = sheetName;
+        sheetSelector.appendChild(option);
+      });
+    }
+    //  フラッシュカードのフォーマットを旧形式に変換する
+    //  プログラムの変更を少なくするため
+    function flashcardGenerate(flashcardData) {
+      let j = 0;
+      let flashcardData2 = [];
+      for (let i = 0; i < flashcardData.length; i++) {
+        let gyou = [flashcardData[i][0], flashcardData[i][1]];
+        flashcardData2.push(gyou);
+        gyou = [flashcardData[i][2], flashcardData[i][3] + '/' + flashcardData[i][4]];
+        flashcardData2.push(gyou);
+
+      }
+      return flashcardData2;
+    }
+
+
 
     // 答えを表示し、音声を再生する関数
     function showAnswer() {
-      const currentData = flashcardData[currentIndex];
-      flashcard.textContent = currentData.definition;
-      // termがHTMLの時に中国だから　HTMLの時だけspeakTextを呼び出す。
-      if (currentData.term === 'HTML') {
-        speakText(currentData.definition);
+      currentIndex = (currentIndex + 1) % flashcardData2.length;
+      const currentData = flashcardData2[currentIndex];
+      console.log(`currentdata= ${currentData}`);
+      flashcard.textContent = currentData[1];
+      termSave = currentData[0];
+      // termがChineseの時に中国だから　Chineseの時だけspeakTextを呼び出す。
+      if (currentData[0] === 'ch') {
+
+        speakText(currentData[1]);
       }
-      currentIndex = (currentIndex + 1) % flashcardData.length;
+    }
+    // 前のカードを表示する関数
+    function showPreviousCard() {
+      currentIndex = currentIndex - 1;
+      if (currentIndex < 0) {
+        currentIndex = 0;
+      }
+      const currentData = flashcardData2[currentIndex];
+      flashcard.textContent = currentData[1];
+      termSave = currentData[0];
+      // termがChineseの時に中国だから　Chineseの時だけspeakTextを呼び出す。
+      if (currentData[0] === 'ch') {
+        speakText(currentData[1]);
+      }
     }
 
     // テキストを音声に変換して再生する関数
     function speakText(text) {
-      const utterance = new SpeechSynthesisUtterance(text);
+      let textChinese = text.split('/')[0];
+      console.log(`split前= ${text}`);
+      console.log(`split後= ${textChinese}`);
+      const utterance = new SpeechSynthesisUtterance(textChinese);
       utterance.lang = 'zh-CN'; // 中国語の言語コード
       synth.speak(utterance);
     }
-
     // 正解不正解の判断
     function checkAnswer(isCorrect) {
       // ここに正解不正解の処理を追加する
@@ -195,16 +254,15 @@ const flashcard = document.getElementById('flashcard');
       resultDiv.textContent = `正解: ${correctCount} 回 不正解: ${incorrectCount} 回`;
     }
 
-    // 最初のカードを表示
-    flashcard.textContent = '按下键看(第5课)单词卡';
 
+
+    // 最初のカードを表示
+    flashcard.textContent = '按下键看单词卡';
     // フラッシュカードがクリックされた時の処理
     flashcard.addEventListener('click', () => {
-      flashcard.style.transform = 'rotateY(180deg)';
-      setTimeout(() => {
-        showAnswer(); // 180度回転後に答えを表示する
-        flashcard.style.transform = 'rotateY(0deg)'; // 答え表示後に元の位置に戻す
-      }, 500); // 500ミリ秒後に答えを表示する（transitionの時間と合わせる）
+      if (termSave === 'ch') {
+        speakText(flashcard.textContent);
+      }
     });
   </script>
 </body>
